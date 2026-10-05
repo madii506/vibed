@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Vibed</title>
+<title>VIBED</title>
 <meta name="description" content="Launch a coin on any vibe-coded app. Fees go to whoever vibed it. One URL in, one meta tag to claim.">
 <meta name="theme-color" content="#FAF9F6">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vibed">
+<meta property="og:title" content="VIBED">
 <meta property="og:description" content="Launch a coin on any vibe-coded app. Fees go to whoever vibed it.">
 <meta property="og:image" content="https://vibed-liard.vercel.app/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -50,7 +50,7 @@
   <section class="hero" id="top">
     <canvas id="flow" aria-hidden="true"></canvas>
     <div class="wrap">
-      <div class="kick rv">The launchpad for vibe-coded apps · Solana</div>
+      <div class="kick rv">The launchpad for <span class="nw">vibe-coded</span> apps · Solana</div>
       <h1 id="h1"><span class="ln">Launch a coin on any vibe-coded app.</span><span class="ln"><em>Fees go to whoever vibed it.</em></span></h1>
       <p class="sub rv" style="--d:.5s">One URL in. One meta tag to claim. Paste an app and see exactly what its coin would say.</p>
       <form class="paste rv" style="--d:.62s" id="pasteForm" autocomplete="off">
@@ -59,7 +59,6 @@
         <button class="btn" type="submit" id="pasteBtn">Read app <span aria-hidden="true">→</span></button>
       </form>
       <div class="liveline" id="liveLine" aria-live="polite"></div>
-      <div class="hint rv" style="--d:.72s">Any host works: lovable.app, vercel.app, netlify.app, a plain .com. Press <kbd>⌘K</kbd> for everything else.</div>
       <div class="result" id="result"></div>
     </div>
     <a class="scrollcue" href="#how" aria-label="Scroll"><span>Scroll</span><i></i></a>
@@ -74,22 +73,19 @@
         <p class="lead rv" style="--d:.1s">Anyone can launch a coin on an app. Only the person who can edit its homepage can claim the fees.</p>
       </div>
       <div class="steps rv" id="steps">
-        <svg class="wire" aria-hidden="true" preserveAspectRatio="none"><path id="wireBase"/><path class="draw" id="wireDraw"/></svg>
+        <svg class="wire" aria-hidden="true" preserveAspectRatio="none"><path id="wireBase"/><path class="draw" id="wireDraw"/><circle class="spark" r="4.5"><animateMotion dur="3.6s" repeatCount="indefinite"><mpath href="#wireBase"/></animateMotion></circle><circle class="spark s2" r="3"><animateMotion dur="3.6s" begin="-1.8s" repeatCount="indefinite"><mpath href="#wireBase"/></animateMotion></circle></svg>
         <div class="step">
-          <div class="dot"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="30" height="22" rx="5"/><path d="M5 15h30"/><path d="M14 23l3 3 6-7"/></svg></div>
-          <div class="n">01 · PASTE</div><h3>Paste the app</h3>
+          <div class="dot"><span>01</span></div><h3>Paste the app</h3>
           <p>Any vibe-coded app's link. We read its real name and image, live.</p>
           <div class="mini">https://<b>your-app.lovable.app</b></div>
         </div>
         <div class="step">
-          <div class="dot"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="13"/><path d="M15 21l4 4 7-9"/></svg></div>
-          <div class="n">02 · LAUNCH</div><h3>Launch on pump.fun</h3>
+          <div class="dot"><span>02</span></div><h3>Launch on pump.fun</h3>
           <p>Use our line in the description. Creator fee: 100% to the vault.</p>
           <div class="mini">vibes <b>your-app.lovable.app</b> via VIBED</div>
         </div>
-        <div class="step">
-          <div class="dot"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13l-7 7 7 7M26 13l7 7-7 7M22 10l-4 20"/></svg></div>
-          <div class="n">03 · CLAIM</div><h3>The builder claims</h3>
+        <div class="step yours">
+          <div class="dot"><span>03</span></div><h3>The builder claims</h3>
           <p>One tag on their homepage. The SOL and future fees are theirs.</p>
           <div class="mini">&lt;meta name="vibed" content="<b>wallet</b>"&gt;</div>
         </div>
@@ -113,9 +109,10 @@
             </ol>
           </div>
           <div class="screen" id="screen">
-            <div class="top"><i></i><i></i><i></i><div class="url" id="screenUrl">your-app.com</div></div>
+            <canvas id="sflow" aria-hidden="true"></canvas>
+            <div class="top"><span class="url" id="screenUrl">your-app.com</span><span class="cnt" id="screenN">01 / 05</span></div>
             <div class="stage">
-              <div class="fr on" data-f="0"><div class="f-app"><div><h5>my weekend app</h5><p>built with one prompt</p><span class="ship">Ship it</span></div><svg class="mouse" viewBox="-9 -9 132 200" aria-hidden="true"><use href="#mk"/></svg></div></div>
+              <div class="fr on" data-f="0"><div class="f-app"><h5>my weekend app</h5><p>built with one prompt</p><span class="shipw"><span class="ship">Ship it</span><svg class="mouse" viewBox="-9 -9 132 200" aria-hidden="true"><use href="#mk"/></svg></span></div></div>
               <div class="fr" data-f="1"><div class="f-coin"><div class="row"><div class="img"><svg viewBox="-9 -9 132 200"><use href="#mk"/></svg></div><div><b>$APP</b><div class="tag">new on pump.fun</div></div></div><div class="d">vibes <b>your-app.com</b> via VIBED</div><div class="fs"><span>creator fee</span><span>100% → VIBED vault</span></div></div></div>
               <div class="fr" data-f="2"><div class="f-flow"><div class="node"><div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2"><circle cx="20" cy="20" r="13"/><path d="M20 12v16M15 16h7a3 3 0 010 6h-5a3 3 0 000 6h8" stroke-linecap="round"/></svg></div><span>$APP trades</span></div><div class="pipe"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M4 20 C60 0, 140 40, 196 20"/></svg></div><div class="node"><div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linejoin="round"><rect x="7" y="9" width="26" height="22" rx="5"/><circle cx="20" cy="20" r="5"/><path d="M20 15v-2M20 27v-2M25 20h2M13 20h2"/></svg></div><span>VIBED vault</span></div></div></div>
               <div class="fr" data-f="3"><div class="f-code"><span class="c">&lt;!-- index.html --&gt;</span><br><span class="t">&lt;head&gt;</span><br>&nbsp;&nbsp;<span class="t">&lt;title&gt;</span>my weekend app<span class="t">&lt;/title&gt;</span><br>&nbsp;&nbsp;<span class="new"><span class="t">&lt;meta</span> <span class="a">name</span>=<span class="s">"vibed"</span> <span class="a">content</span>=<span class="s">"<span id="typed" class="typed"></span>"</span><span class="t">&gt;</span></span><br><span class="t">&lt;/head&gt;</span></div></div>
@@ -253,7 +250,6 @@
     <div class="wrap">
       <h2 class="rv">Keep <em>vibing.</em></h2>
       <div class="acts rv" style="--d:.1s"><a class="btn" href="#top">Paste an app</a><a class="btn ghost" href="#claim">Claim your fees</a></div>
-      <div class="fine rv" style="--d:.2s">Vibed is not affiliated with pump.fun, Solana or any AI company. Nothing here is financial advice.</div>
     </div>
   </section>
 </main>
