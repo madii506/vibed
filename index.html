@@ -31,7 +31,7 @@
       <a href="#vault">Vault</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <div class="right"><button class="ca" id="caPill" type="button" hidden><b>CA</b><span id="caShort"></span></button><a class="btn sm" href="#launch">Launch a coin</a></div>
+    <div class="right"><button class="kbd" id="cmdk" type="button" aria-label="Open the command menu">⌘K</button><button class="ca" id="caPill" type="button" hidden><b>CA</b><span id="caShort"></span></button><a class="btn sm" href="#launch">Launch a coin</a></div>
   </div>
 </header>
 <span id="live" class="sr" aria-live="polite"></span>
@@ -58,13 +58,14 @@
         <input id="pasteUrl" name="url" inputmode="url" spellcheck="false" placeholder="your-app.lovable.app" aria-label="App link">
         <button class="btn" type="submit" id="pasteBtn">Read app <span aria-hidden="true">→</span></button>
       </form>
-      <div class="hint rv" style="--d:.72s">Any host works: lovable.app, vercel.app, netlify.app, a plain .com.</div>
+      <div class="liveline" id="liveLine" aria-live="polite"></div>
+      <div class="hint rv" style="--d:.72s">Any host works: lovable.app, vercel.app, netlify.app, a plain .com. Press <kbd>⌘K</kbd> for everything else.</div>
       <div class="result" id="result"></div>
     </div>
     <a class="scrollcue" href="#how" aria-label="Scroll"><span>Scroll</span><i></i></a>
   </section>
 
-  <div class="marq" aria-hidden="true"><div class="tr" id="marq"></div></div>
+  <div class="marq" aria-hidden="true"><div class="tr js" id="marq"></div></div>
 
   <section class="band" id="how">
     <div class="wrap">
@@ -165,7 +166,7 @@
       <div class="two">
         <div class="rv">
           <div class="codecard">
-            <div class="tb"><span>index.html · inside &lt;head&gt;</span><button class="cbtn" type="button" id="copyTag">Copy</button></div>
+            <div class="tb"><div class="tabs" id="tagTabs" role="tablist"><button type="button" class="on" data-fw="html">HTML</button><button type="button" data-fw="vite">Lovable · Vite</button><button type="button" data-fw="next">Next.js</button><button type="button" data-fw="astro">Astro</button></div><button class="cbtn" type="button" id="copyTag">Copy</button></div>
             <pre id="tagPre"></pre>
           </div>
           <ul class="steps-mini" style="margin-top:22px">
@@ -213,7 +214,7 @@
       <div class="vault">
         <div class="vcard rv" id="vcard">
           <canvas id="vflow" aria-hidden="true"></canvas>
-          <div><div class="kick">VIBED vault · Solana</div><div class="bal" id="vBal"><span id="vNum">—</span><small>SOL</small></div></div>
+          <div><div class="kick">VIBED vault · Solana</div><div class="bal" id="vBal"><span id="vNum">—</span><small>SOL</small></div><div class="usd mono" id="vUsd"></div></div>
           <div class="addr" id="vAddr"><span>Address published at launch.</span></div>
         </div>
         <div class="cannot rv" style="--d:.08s">
