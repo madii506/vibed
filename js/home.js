@@ -41,7 +41,7 @@ function chrome() {
       nav.classList.toggle('scrolled', scrollY > 10);
       const y = scrollY + innerHeight * 0.35; let cur = null;
       for (const s of secs) if (s.offsetTop <= y) cur = s.id;
-      links.forEach(a => { const on = a.getAttribute('href') === '#' + cur; if (on && !a.classList.contains('on') && innerWidth < 1060) a.parentElement.scrollTo({ left: a.offsetLeft - 60, behavior: 'smooth' }); a.classList.toggle('on', on); });
+      links.forEach(a => { const on = a.getAttribute('href') === '#' + cur; if (on && !a.classList.contains('on') && innerWidth < 1060) a.parentElement.scrollTo({ left: a.offsetLeft - a.parentElement.offsetLeft - 18, behavior: 'smooth' }); a.classList.toggle('on', on); });
       story();
     });
   };
@@ -50,6 +50,7 @@ function chrome() {
   flow($('#flow'), { interactive: true, clear: (w, h) => ({ x: w / 2, y: h * 0.47, rx: Math.min(w * 0.44, 640), ry: Math.min(h * 0.36, 300) }) });
   flow($('#xflow'), { density: 1 / 1500, clear: (w, h) => ({ x: w / 2, y: h * 0.5, rx: Math.min(w * 0.36, 520), ry: h * 0.32 }) });
   flow($('#vflow'), { bg: [11, 11, 13], ink: [255, 255, 255], inkA: 0.13, fade: 0.07, density: 1 / 700, accent: 0.08 });
+  flow($('#sflow'), { bg: [255, 255, 255], inkA: 0.14, fade: 0.07, density: 1 / 850, accent: 0.07, clear: (w, h) => ({ x: w / 2, y: h * 0.53, rx: w * 0.41, ry: h * 0.35 }) });
 }
 
 /* ---------- 01: the drawn wire under the three steps ---------- */
@@ -86,7 +87,7 @@ function setFrame(f) {
   if (f === frame) return; frame = f;
   $$('#storyList li').forEach((li, i) => li.classList.toggle('on', i === f));
   $$('.fr').forEach((x, i) => x.classList.toggle('on', i === f));
-  $('#screenUrl').textContent = URLS[f];
+  $('#screenUrl').textContent = URLS[f]; $('#screenN').textContent = '0' + (f + 1) + ' / 05';
   if (f === 3) typeTag();
 }
 function typeTag(instant) {
@@ -139,17 +140,22 @@ async function hero(e) {
   const a = await readApp(v);
   if (!a.ok) { box.innerHTML = `<div class="err">${esc(a.error || 'Could not read that app.')}</div>`; return; }
   box.innerHTML = appCard(a); wireImgs(box);
-  ['#lUrl', '#mUrl', '#cUrl'].forEach(s => { if (!$(s).value) $(s).value = a.host; });
+  ['#lUrl', '#mUrl', '#cUrl'].forEach(s => { if (!$(s).value) $(s).value = a.host; }); kitPreview();
   history.replaceState(null, '', '?app=' + encodeURIComponent(a.host) + location.hash);
+}
+const PUMP = `<div class="acts"><a class="btn sm" href="https://pump.fun/create" target="_blank" rel="noopener">Open pump.fun ↗</a></div>`;
+function kitPreview() {
+  const h = hostOf($('#lUrl').value), ok = !!h && h.includes('.'), kit = $('#lKit');
+  kit.classList.toggle('ghost', !ok); kit.innerHTML = kitRows(ok ? h : 'your-app.lovable.app') + PUMP;
 }
 async function launchRead() {
   const v = $('#lUrl').value, st = $('#lStatus'), kit = $('#lKit');
   const h = hostOf(v); if (!h) { st.textContent = 'Paste an app link first.'; return; }
-  st.textContent = 'Reading…'; kit.innerHTML = '';
+  st.textContent = 'Reading…';
   const a = await readApp(v);
   if (!a.ok) { st.textContent = a.error; return; }
   st.textContent = (a.title ? a.title + ' · ' : '') + 'read live';
-  kit.innerHTML = kitRows(a.host) + `<div class="acts"><a class="btn sm" href="https://pump.fun/create" target="_blank" rel="noopener">Open pump.fun ↗</a></div>`;
+  kit.classList.remove('ghost'); kit.innerHTML = kitRows(a.host) + PUMP;
   if (!$('#mUrl').value) $('#mUrl').value = a.host;
 }
 
@@ -332,7 +338,10 @@ function renderBoard() {
   $$('#stats [data-k]').forEach(b => countTo(b, s[b.dataset.k], b.dataset.k === 'paidSol' ? 4 : 0));
   const box = $('#apps');
   if (!board.apps.length) {
-    box.innerHTML = `<div class="empty"><b>The board is empty, for now.</b><p>No VIBED coin has been listed yet. Paste an app at the top, launch it on pump.fun with the line, then list it here.</p><a class="btn" href="#top">Paste an app</a></div>`;
+    if (!$('.slot', box)) {
+      box.innerHTML = `<div class="slot"><canvas aria-hidden="true"></canvas><div class="sc"><svg viewBox="-9 -9 132 200" aria-hidden="true"><use href="#mk"/></svg><b>The first app lands here.</b><p>Nothing is listed yet. Launch a coin on any app with the line, then list it.</p><a class="btn" href="#top">Paste an app</a></div></div>`;
+      flow($('.slot canvas', box), { bg: [255, 255, 255], inkA: 0.14, fade: 0.07, density: 1 / 1000, accent: 0.07, clear: (w, h) => ({ x: w / 2, y: h / 2, rx: Math.min(w * 0.36, 380), ry: h * 0.4 }) });
+    }
   } else {
     box.innerHTML = `<div class="apps">${board.apps.map((a, i) => {
       const claim = a.claim ? (a.claim.live === false ? `<span class="chip bad"><i></i>tag removed</span>` : `<span class="chip ok"><i></i>claimed · ${esc(short(a.claim.wallet))}</span>`) : `<span class="chip"><i></i>unclaimed</span>`;
@@ -406,12 +415,13 @@ function faq() {
 /* ---------- events ---------- */
 document.addEventListener('click', e => {
   const c = e.target.closest('[data-copy]'); if (c) { copy(c.dataset.copy, c.dataset.label || 'Copied'); return; }
-  const g = e.target.closest('[data-go]'); if (g) { const h = g.dataset.host; if (h) { $('#mUrl').value = h; $('#lUrl').value = h; } document.getElementById(g.dataset.go).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); setTimeout(() => $('#mMint').focus({ preventScroll: true }), 700); return; }
+  const g = e.target.closest('[data-go]'); if (g) { const h = g.dataset.host; if (h) { $('#mUrl').value = h; $('#lUrl').value = h; kitPreview(); } document.getElementById(g.dataset.go).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); setTimeout(() => $('#mMint').focus({ preventScroll: true }), 700); return; }
   const p = e.target.closest('[data-pay]'); if (p) { pay(p); return; }
 });
 $('#pasteForm').addEventListener('submit', hero);
 $('#lRead').addEventListener('click', launchRead);
 $('#lUrl').addEventListener('keydown', e => { if (e.key === 'Enter') launchRead(); });
+$('#lUrl').addEventListener('input', () => { $('#lStatus').textContent = ''; kitPreview(); });
 $('#mList').addEventListener('click', listCoin);
 $('#cCheck').addEventListener('click', checkSite);
 $('#cUrl').addEventListener('keydown', e => { if (e.key === 'Enter') checkSite(); });
@@ -435,7 +445,7 @@ $('#pasteUrl').addEventListener('input', () => { const h = hostOf($('#pasteUrl')
 document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); palette(); } });
 $('#cmdk').addEventListener('click', palette);
 document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && !t.classList.contains('og')) t.classList.add('gone'); }, true);
-words(); marquee(); chrome(); wire(); reveal(); faq(); tagCode(); loadBoard(); typePlaceholder();
-magnetic(); tilt('.appcard, .panel, .app, .vcard, .cannot, .step .dot, .receipt, .f-coin'); kickers();
+words(); marquee(); chrome(); wire(); reveal(); faq(); tagCode(); kitPreview(); loadBoard(); typePlaceholder();
+magnetic(); tilt('.appcard, .panel, .app, .vcard, .cannot, .receipt, .f-coin'); kickers();
 const qp = new URLSearchParams(location.search).get('app');
 if (qp) { $('#pasteUrl').value = qp; hero(); }
