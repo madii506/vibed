@@ -74,6 +74,10 @@ async function load() {
   }));
   let vault = null;
   if (L.VAULT) { try { const b = await L.rpc('getBalance', [L.VAULT, { commitment: 'confirmed' }]); vault = { address: L.VAULT, sol: (b && b.value || 0) / 1e9 }; } catch (e) { vault = { address: L.VAULT, sol: null }; } }
+  if (vault && vault.sol != null) {
+    const px = await L.cached('solusd', 60000, async () => { try { const j = await L.getJson('https://lite-api.jup.ag/price/v3?ids=So11111111111111111111111111111111111111112', {}, 6000); const v = j && j['So11111111111111111111111111111111111111112']; return v && v.usdPrice ? Number(v.usdPrice) : null; } catch (e) { return null; } });
+    vault.usd = px ? Math.round(vault.sol * px * 100) / 100 : null; vault.solUsd = px;
+  }
   const list = [...apps.values()].filter(a => a.coins.length || a.claim || a.paid.length)
     .sort((x, y) => (y.coins.length - x.coins.length) || ((y.first || 0) - (x.first || 0)));
   feed.sort((a, b) => b.t - a.t);
