@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vibed</title>
+<meta name="description" content="Launch a coin on any vibe-coded app. Fees go to whoever vibed it. One URL in, one meta tag to claim.">
+<meta name="theme-color" content="#FAF9F6">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vibed">
+<meta property="og:description" content="Launch a coin on any vibe-coded app. Fees go to whoever vibed it.">
+<meta property="og:image" content="__ORIGIN__/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="__ORIGIN__/assets/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/fav-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preload" href="/fonts/brico-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/v.css">
+</head>
+<body>
+<div class="prog" aria-hidden="true"><i id="prog"></i></div>
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Vibed"><svg viewBox="-9 -9 132 200" aria-hidden="true"><use href="#mk"/></svg><span>Vibed</span></a>
+    <nav class="links">
+      <a href="#how">How it works</a>
+      <a href="#launch">Launch</a>
+      <a href="#claim">Claim</a>
+      <a href="#board">Board</a>
+      <a href="#vault">Vault</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="right"><button class="ca" id="caPill" type="button" hidden><b>CA</b><span id="caShort"></span></button><a class="btn sm" href="#launch">Launch a coin</a></div>
+  </div>
+</header>
+<span id="live" class="sr" aria-live="polite"></span>
+
+<!-- the mark, used everywhere -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hz" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF3D8B"/><stop offset=".5" stop-color="#FF7A45"/><stop offset=".6" stop-color="#FFB547"/><stop offset=".6" stop-color="#FFE3A3"/><stop offset=".66" stop-color="#FFE3A3"/><stop offset=".66" stop-color="#4A1638"/><stop offset="1" stop-color="#1D0A1B"/></linearGradient>
+    <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF3D8B"/><stop offset=".6" stop-color="#FF7A45"/><stop offset="1" stop-color="#FFB547"/></linearGradient>
+    <linearGradient id="pg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF3D8B"/><stop offset="1" stop-color="#FFB547"/></linearGradient>
+    <g id="mk"><path d="M0,0 L0,160 L38,122 L62,179.6 L87.75,168.9 L64,112 L112,112 Z" fill="#0A0A0A" stroke="#0A0A0A" stroke-width="12" stroke-linejoin="round"/><g fill="#FAF9F6" stroke="#FAF9F6" stroke-width="7" stroke-linejoin="round"><path d="M-4.00,68.92 L43.70,68.92 C43.70,80.37 43.22,92.58 38.93,100.21 C34.16,107.84 20.80,108.61 13.17,106.32 C3.63,104.03 -1.14,96.40 -2.57,86.47 C-3.52,80.37 -4.00,75.03 -4.00,68.92 Z"/><path d="M102.00,68.92 L54.30,68.92 C54.30,80.37 54.78,92.58 59.07,100.21 C63.84,107.84 77.20,108.61 84.83,106.32 C94.37,104.03 99.14,96.40 100.57,86.47 C101.52,80.37 102.00,75.03 102.00,68.92 Z"/><path d="M-7.2,66.9 L105.2,66.9 L104.2,81.5 L-6.2,81.5 Z"/></g><g fill="#0A0A0A"><path d="M-4.00,68.92 L43.70,68.92 C43.70,80.37 43.22,92.58 38.93,100.21 C34.16,107.84 20.80,108.61 13.17,106.32 C3.63,104.03 -1.14,96.40 -2.57,86.47 C-3.52,80.37 -4.00,75.03 -4.00,68.92 Z"/><path d="M102.00,68.92 L54.30,68.92 C54.30,80.37 54.78,92.58 59.07,100.21 C63.84,107.84 77.20,108.61 84.83,106.32 C94.37,104.03 99.14,96.40 100.57,86.47 C101.52,80.37 102.00,75.03 102.00,68.92 Z"/><path d="M-7.2,66.9 L105.2,66.9 L104.2,81.5 L-6.2,81.5 Z" stroke="#0A0A0A" stroke-width="2" stroke-linejoin="round"/></g><path d="M2.20,83.71 L37.50,83.71 C37.50,89.85 37.15,96.39 33.97,100.48 C30.44,104.58 20.56,104.98 14.91,103.76 C7.85,102.53 4.32,98.44 3.26,93.12 C2.55,89.85 2.20,86.99 2.20,83.71 Z" fill="url(#hz)"/><path d="M95.80,83.71 L60.50,83.71 C60.50,89.85 60.85,96.39 64.03,100.48 C67.56,104.58 77.44,104.98 83.09,103.76 C90.15,102.53 93.68,98.44 94.74,93.12 C95.45,89.85 95.80,86.99 95.80,83.71 Z" fill="url(#hz)"/><path d="M5.5,85.5 l6,0 l-4.6,10 l-6,0 Z" fill="#fff" fill-opacity=".9"/></g>
+  </defs>
+</svg>
+
+<main>
+  <section class="hero" id="top">
+    <canvas id="flow" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div class="kick rv">The launchpad for vibe-coded apps · Solana</div>
+      <h1 id="h1"><span class="ln">Launch a coin on any vibe-coded app.</span><span class="ln"><em>Fees go to whoever vibed it.</em></span></h1>
+      <p class="sub rv" style="--d:.5s">One URL in. One meta tag to claim. Paste an app and see exactly what its coin would say.</p>
+      <form class="paste rv" style="--d:.62s" id="pasteForm" autocomplete="off">
+        <span class="pre">https://</span>
+        <input id="pasteUrl" name="url" inputmode="url" spellcheck="false" placeholder="your-app.lovable.app" aria-label="App link">
+        <button class="btn" type="submit" id="pasteBtn">Read app <span aria-hidden="true">→</span></button>
+      </form>
+      <div class="hint rv" style="--d:.72s">Any host works: lovable.app, vercel.app, netlify.app, a plain .com.</div>
+      <div class="result" id="result"></div>
+    </div>
+    <a class="scrollcue" href="#how" aria-label="Scroll"><span>Scroll</span><i></i></a>
+  </section>
+
+  <div class="marq" aria-hidden="true"><div class="tr" id="marq"></div></div>
+
+  <section class="band" id="how">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="kick rv">01 — How it works</div><h2 class="rv">Three steps. <em>One</em> of them is yours.</h2></div>
+        <p class="lead rv" style="--d:.1s">Anyone can launch a coin on an app. Only the person who can edit its homepage can claim the fees.</p>
+      </div>
+      <div class="steps rv" id="steps">
+        <svg class="wire" aria-hidden="true" preserveAspectRatio="none"><path id="wireBase"/><path class="draw" id="wireDraw"/></svg>
+        <div class="step">
+          <div class="dot"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="30" height="22" rx="5"/><path d="M5 15h30"/><path d="M14 23l3 3 6-7"/></svg></div>
+          <div class="n">01 · PASTE</div><h3>Paste the app</h3>
+          <p>Any vibe-coded app's link. We read its real name and image, live.</p>
+          <div class="mini">https://<b>your-app.lovable.app</b></div>
+        </div>
+        <div class="step">
+          <div class="dot"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="20" r="13"/><path d="M15 21l4 4 7-9"/></svg></div>
+          <div class="n">02 · LAUNCH</div><h3>Launch on pump.fun</h3>
+          <p>Use our line in the description. Creator fee: 100% to the vault.</p>
+          <div class="mini">vibes <b>your-app.lovable.app</b> via VIBED</div>
+        </div>
+        <div class="step">
+          <div class="dot"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13l-7 7 7 7M26 13l7 7-7 7M22 10l-4 20"/></svg></div>
+          <div class="n">03 · CLAIM</div><h3>The builder claims</h3>
+          <p>One tag on their homepage. The SOL and future fees are theirs.</p>
+          <div class="mini">&lt;meta name="vibed" content="<b>wallet</b>"&gt;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story" id="story">
+    <div class="pin">
+      <div class="wrap">
+        <div class="grid">
+          <div>
+            <div class="kick rv">02 — From prompt to payout</div>
+            <h2 class="rv" style="margin-top:20px">Watch one app <em>get paid.</em></h2>
+            <ol id="storyList">
+              <li class="on"><b>01</b><div><h4>Someone vibes an app.</h4><p>A prompt, an afternoon, a link that travels.</p></div></li>
+              <li><b>02</b><div><h4>Someone else launches its coin.</h4><p>The pump.fun description names the app. The fee share points to the vault.</p></div></li>
+              <li><b>03</b><div><h4>The fees wait in the vault.</h4><p>A public Solana wallet anyone can watch.</p></div></li>
+              <li><b>04</b><div><h4>The builder adds one line.</h4><p>A meta tag on their own homepage, naming their wallet.</p></div></li>
+              <li><b>05</b><div><h4>The vault pays them.</h4><p>Every payout is posted with its transaction.</p></div></li>
+            </ol>
+          </div>
+          <div class="screen" id="screen">
+            <div class="top"><i></i><i></i><i></i><div class="url" id="screenUrl">your-app.com</div></div>
+            <div class="stage">
+              <div class="fr on" data-f="0"><div class="f-app"><div><h5>my weekend app</h5><p>built with one prompt</p><span class="ship">Ship it</span></div><svg class="mouse" viewBox="-9 -9 132 200" aria-hidden="true"><use href="#mk"/></svg></div></div>
+              <div class="fr" data-f="1"><div class="f-coin"><div class="row"><div class="img"><svg viewBox="-9 -9 132 200"><use href="#mk"/></svg></div><div><b>$APP</b><div class="tag">new on pump.fun</div></div></div><div class="d">vibes <b>your-app.com</b> via VIBED</div><div class="fs"><span>creator fee</span><span>100% → VIBED vault</span></div></div></div>
+              <div class="fr" data-f="2"><div class="f-flow"><div class="node"><div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2"><circle cx="20" cy="20" r="13"/><path d="M20 12v16M15 16h7a3 3 0 010 6h-5a3 3 0 000 6h8" stroke-linecap="round"/></svg></div><span>$APP trades</span></div><div class="pipe"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M4 20 C60 0, 140 40, 196 20"/></svg></div><div class="node"><div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linejoin="round"><rect x="7" y="9" width="26" height="22" rx="5"/><circle cx="20" cy="20" r="5"/><path d="M20 15v-2M20 27v-2M25 20h2M13 20h2"/></svg></div><span>VIBED vault</span></div></div></div>
+              <div class="fr" data-f="3"><div class="f-code"><span class="c">&lt;!-- index.html --&gt;</span><br><span class="t">&lt;head&gt;</span><br>&nbsp;&nbsp;<span class="t">&lt;title&gt;</span>my weekend app<span class="t">&lt;/title&gt;</span><br>&nbsp;&nbsp;<span class="new"><span class="t">&lt;meta</span> <span class="a">name</span>=<span class="s">"vibed"</span> <span class="a">content</span>=<span class="s">"<span id="typed" class="typed"></span>"</span><span class="t">&gt;</span></span><br><span class="t">&lt;/head&gt;</span></div></div>
+              <div class="fr" data-f="4"><div class="f-pay"><div class="f-flow" style="max-width:520px"><div class="node"><div class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0A0A0A" stroke-width="2.2" stroke-linejoin="round"><rect x="7" y="9" width="26" height="22" rx="5"/><circle cx="20" cy="20" r="5"/></svg></div><span>vault</span></div><div class="pipe"><svg viewBox="0 0 200 40" preserveAspectRatio="none"><path d="M4 20 C60 40, 140 0, 196 20"/></svg></div><div class="node"><div class="ic"><svg viewBox="-9 -9 132 200" style="width:22px;height:34px"><use href="#mk"/></svg></div><span>the builder</span></div></div><div class="receipt"><div><span>payout</span><span>vault → builder</span></div><div><span>app</span><span>your-app.com</span></div><div><span>status</span><span class="st">confirmed · tx posted</span></div></div></div></div>
+            </div>
+            <div class="illus">illustration</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tint" id="launch">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="kick rv">03 — Launch</div><h2 class="rv">Launch it <em>right.</em></h2></div>
+        <p class="lead rv" style="--d:.1s">A VIBED coin is a normal pump.fun coin with two things set: one line in its description and its fee share. Then list it here so the board can see it.</p>
+      </div>
+      <div class="two">
+        <div class="panel rv">
+          <span class="n">A</span>
+          <h3>Make the coin</h3>
+          <p>Paste the app, copy the two settings, launch on pump.fun.</p>
+          <label class="field"><span>App link</span><input id="lUrl" placeholder="your-app.lovable.app" spellcheck="false" inputmode="url"></label>
+          <div class="acts"><button class="btn sm" type="button" id="lRead">Read app</button><span class="mono" id="lStatus" style="font-size:12.5px;color:var(--mute)"></span></div>
+          <div class="anat" id="lKit" style="margin-top:18px"></div>
+        </div>
+        <div class="panel rv" style="--d:.08s">
+          <span class="n">B</span>
+          <h3>List it on the board</h3>
+          <p>After pump.fun creates it, paste the mint. We check its description, then your wallet signs one small memo.</p>
+          <label class="field"><span>Mint address</span><input id="mMint" placeholder="the coin's address from pump.fun" spellcheck="false"></label>
+          <label class="field"><span>App link</span><input id="mUrl" placeholder="the same app link" spellcheck="false" inputmode="url"></label>
+          <div class="acts"><button class="btn sm" type="button" id="mList">Check &amp; list</button></div>
+          <div class="err" id="mErr"></div><div id="mOk"></div>
+          <ul class="steps-mini"><li>The description must include the exact line.</li><li>Network fee is about 0.00002 SOL. Nothing else is charged here.</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band dark" id="claim">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="kick rv">04 — Claim</div><h2 class="rv">Vibed it? <em>Claim it.</em></h2></div>
+        <p class="lead rv" style="--d:.1s">One line in your homepage's HTML names your wallet. We read your live page, never a screenshot or a DM.</p>
+      </div>
+      <div class="two">
+        <div class="rv">
+          <div class="codecard">
+            <div class="tb"><span>index.html · inside &lt;head&gt;</span><button class="cbtn" type="button" id="copyTag">Copy</button></div>
+            <pre id="tagPre"></pre>
+          </div>
+          <ul class="steps-mini" style="margin-top:22px">
+            <li>It goes on the homepage of the host the coin names.</li>
+            <li>It must be in the HTML your server sends, not added later by JavaScript.</li>
+            <li>Name one wallet. The SOL goes there, and so do future fees.</li>
+          </ul>
+        </div>
+        <div class="panel rv" style="--d:.08s">
+          <span class="n">✓</span>
+          <h3>Check your site</h3>
+          <p>Connect the wallet in your tag, paste your app, check, then record the claim on Solana.</p>
+          <label class="field"><span>Your app</span><input id="cUrl" placeholder="your-app.lovable.app" spellcheck="false" inputmode="url"></label>
+          <div class="acts"><button class="btn sm" type="button" id="cCheck">Check my site</button><button class="btn sm ghost" type="button" id="cWallet">Connect wallet</button></div>
+          <div class="verdict" id="cVerdict"></div>
+          <div class="err" id="cErr" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="board">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="kick rv">05 — Board</div><h2 class="rv">Every app, <em>live.</em></h2></div>
+        <p class="lead rv" style="--d:.1s">Rebuilt from Solana on every read: listed coins (checked against pump.fun), claimed apps (tags re-read live), and payouts from the vault.</p>
+      </div>
+      <div class="stats rv" id="stats">
+        <div><b data-k="coins">—</b><span>coins listed</span></div>
+        <div><b data-k="apps">—</b><span>apps with a coin</span></div>
+        <div><b data-k="claimed">—</b><span>apps claimed</span></div>
+        <div><b data-k="paidSol">—</b><span>SOL paid out</span></div>
+      </div>
+      <div id="apps"></div>
+      <div class="feed rv" id="feedBox" hidden><div class="fh"><span>Latest on chain</span><span class="chip live"><i></i>live</span></div><div id="feed"></div></div>
+    </div>
+  </section>
+
+  <section class="band tint" id="vault">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="kick rv">06 — The vault</div><h2 class="rv">Watch the <em>money.</em></h2></div>
+        <p class="lead rv" style="--d:.1s">Every VIBED coin's fee share points here. It holds fees until builders claim. Anything that leaves it without a posted payout would still show on chain.</p>
+      </div>
+      <div class="vault">
+        <div class="vcard rv" id="vcard">
+          <canvas id="vflow" aria-hidden="true"></canvas>
+          <div><div class="kick">VIBED vault · Solana</div><div class="bal" id="vBal"><span id="vNum">—</span><small>SOL</small></div></div>
+          <div class="addr" id="vAddr"><span>Address published at launch.</span></div>
+        </div>
+        <div class="cannot rv" style="--d:.08s">
+          <div class="r h"><div>It cannot</div><div>So it</div></div>
+          <div class="r"><div>see who built an app</div><div>pays whoever can put the tag on its live homepage</div></div>
+          <div class="r"><div>pay out by itself yet</div><div>has a person send each payout, and posts every one with its transaction</div></div>
+          <div class="r"><div>make a builder claim</div><div>keeps the SOL in a public vault until they do</div></div>
+          <div class="r"><div>know what any coin will be worth</div><div>promises holders nothing, $VIBED included</div></div>
+        </div>
+      </div>
+      <div class="payouts" id="payouts"></div>
+      <div class="op" id="op" hidden></div>
+    </div>
+  </section>
+
+  <section class="band" id="faq">
+    <div class="wrap">
+      <div class="head">
+        <div><div class="kick rv">07 — Questions</div><h2 class="rv">The fine print, <em>plainly.</em></h2></div>
+        <p class="lead rv" style="--d:.1s">A dash means nothing has been read yet. A dash is not a zero.</p>
+      </div>
+      <div class="faq">
+        <details class="rv"><summary>Where do the fees wait?<i></i></summary><div class="a"><p>In the VIBED vault, one public Solana wallet anyone can watch. Every coin launched with the VIBED line and fee share sends 100% of its creator fee there. It waits until that app's builder claims.</p></div></details>
+        <details class="rv"><summary>Who sends them?<i></i></summary><div class="a"><p>For now, a person on the VIBED team. Once the tag is on the live page and the claim is recorded, they send the SOL to the wallet in the tag and keep forwarding new fees. Every payout is posted with its transaction.</p></div></details>
+        <details class="rv"><summary>What if the builder never claims?<i></i></summary><div class="a"><p>It keeps waiting in the vault. It doesn't go to the launcher, and holders aren't owed it: nothing is promised to holders of any coin.</p></div></details>
+        <details class="rv"><summary>Can someone fake a claim?<i></i></summary><div class="a"><p>They'd have to put the tag on the live homepage of the host in the coin's line, and anyone who can do that controls the page. We read that page itself. Screenshots, DMs and look-alike domains don't count.</p></div></details>
+        <details class="rv"><summary>My app is a single-page app. Does the tag still work?<i></i></summary><div class="a"><p>Yes, if the tag is in your index.html. We read the HTML your server sends before any JavaScript runs, so a tag added later by a script won't be seen.</p></div></details>
+        <details class="rv"><summary>What is $VIBED?<i></i></summary><div class="a"><p>The pad's own coin. That's all it is: no rewards, no burns, no share of anyone's fees. Nothing is promised to people who hold it.</p></div></details>
+        <details class="rv"><summary>Is VIBED affiliated with any AI tool?<i></i></summary><div class="a"><p>No. VIBED isn't affiliated with or endorsed by any AI tool, app builder or host. And a coin that names an app isn't endorsed by that app's builder.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="exit">
+    <canvas id="xflow" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <h2 class="rv">Keep <em>vibing.</em></h2>
+      <div class="acts rv" style="--d:.1s"><a class="btn" href="#top">Paste an app</a><a class="btn ghost" href="#claim">Claim your fees</a></div>
+      <div class="fine rv" style="--d:.2s">Vibed is not affiliated with pump.fun, Solana or any AI company. Nothing here is financial advice.</div>
+    </div>
+  </section>
+</main>
+<script type="module" src="/js/home.js"></script>
+</body>
+</html>
