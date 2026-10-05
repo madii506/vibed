@@ -8,6 +8,7 @@ export function flow(canvas, o = {}) {
   const ctx = canvas.getContext('2d', { alpha: false });
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let w = 0, h = 0, dpr = 1, parts = [], raf = 0, on = false, t = Math.random() * 1000, last = 0;
+  const ptr = { x: -9999, y: -9999, a: 0 }, rings = [];
   const angle = (x, y) => {
     const s = opt.scale;
     return (Math.sin(x * s + t * 0.00011) * 1.6 + Math.cos(y * s * 1.3 - t * 0.00008) * 1.4 + Math.sin((x + y) * s * 0.7 + 1.7) * 1.1
@@ -33,8 +34,17 @@ export function flow(canvas, o = {}) {
     ctx.fillStyle = `rgba(${opt.bg},${opt.fade})`; ctx.fillRect(0, 0, w, h);
     ctx.lineWidth = 1;
     const ink = `rgba(${opt.ink},${opt.inkA})`;
+    if (ptr.a > 0) ptr.a = Math.max(0, ptr.a - 0.004 * dt);
+    const now = performance.now();
+    for (let i = rings.length - 1; i >= 0; i--) { const r = rings[i]; r.r = (now - r.t0) * 0.42; if (r.r > 520) rings.splice(i, 1); }
+    for (const r of rings) { ctx.strokeStyle = `rgba(229,64,122,${Math.max(0, 0.32 - r.r / 1700)})`; ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke(); }
     for (const p of parts) {
-      const a = angle(p.x, p.y), v = opt.speed * dt;
+      let a = angle(p.x, p.y); const v = opt.speed * dt;
+      if (opt.interactive) {
+        const dx = p.x - ptr.x, dy = p.y - ptr.y, d = Math.hypot(dx, dy), R = 190;
+        if (d < R && ptr.a > 0) a = a * (d / R) + (Math.atan2(dy, dx) + Math.PI / 2) * (1 - d / R) * Math.min(1, ptr.a);
+        for (const r of rings) { const rx = p.x - r.x, ry = p.y - r.y, rd = Math.hypot(rx, ry); if (Math.abs(rd - r.r) < 34) a = Math.atan2(ry, rx); }
+      }
       const nx = p.x + Math.cos(a) * v, ny = p.y + Math.sin(a) * v;
       p.age++;
       if (p.age > p.life || nx < -5 || ny < -5 || nx > w + 5 || ny > h + 5 || inClear(nx, ny)) { spawn(p); continue; }
@@ -58,6 +68,12 @@ export function flow(canvas, o = {}) {
   }
   function play() { if (reduce || on) return; on = true; last = 0; if (!raf) raf = requestAnimationFrame(loop); }
   function pause() { on = false; if (raf) cancelAnimationFrame(raf); raf = 0; }
+  if (opt.interactive) {
+    const host = canvas.parentElement;
+    host.addEventListener('pointermove', e => { const r = canvas.getBoundingClientRect(); ptr.x = e.clientX - r.left; ptr.y = e.clientY - r.top; ptr.a = 1; }, { passive: true });
+    host.addEventListener('pointerleave', () => { ptr.a = 0; });
+    host.addEventListener('pointerdown', e => { if (e.target.closest('input,button,a,form,.result')) return; const r = canvas.getBoundingClientRect(); rings.push({ x: e.clientX - r.left, y: e.clientY - r.top, t0: performance.now(), r: 0 }); if (rings.length > 4) rings.shift(); });
+  }
   size();
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 180); });
   const io = new IntersectionObserver(es => es.forEach(e => (e.isIntersecting && !document.hidden ? play() : pause())), { threshold: 0.01 });

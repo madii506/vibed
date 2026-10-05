@@ -1,6 +1,7 @@
 // VIBED home: the app reader (hero + launch), listing a coin, the claim checker, the live board, the vault, the story.
 import { CONFIG, $, $$, esc, short, ago, sol, usd, getJ, toast, copy, reveal, reduce, wallets, connect, human, act } from './core.js';
 import { flow } from './flow.js';
+import { magnetic, tilt, kickers, marquee as runMarquee } from './fx.js';
 
 const TX = s => 'https://solscan.io/tx/' + s;
 const ACCT = a => 'https://solscan.io/account/' + a;
@@ -25,6 +26,7 @@ function marquee() {
   const t = ['Any host', 'One URL', 'pump.fun', '100% of creator fees', 'Public vault', 'One meta tag', 'Every payout posted', 'Whoever vibed it'];
   const row = t.map(x => `<span>${esc(x)}</span>`).join('');
   $('#marq').innerHTML = row + row + row + row;
+  runMarquee($('#marq'));
 }
 function chrome() {
   const prog = $('#prog'), nav = $('#nav');
@@ -45,7 +47,7 @@ function chrome() {
   };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
   if (CONFIG.ca) { const p = $('#caPill'); p.hidden = false; $('#caShort').textContent = short(CONFIG.ca); p.onclick = () => copy(CONFIG.ca, 'Contract address copied'); }
-  flow($('#flow'), { clear: (w, h) => ({ x: w / 2, y: h * 0.47, rx: Math.min(w * 0.44, 640), ry: Math.min(h * 0.36, 300) }) });
+  flow($('#flow'), { interactive: true, clear: (w, h) => ({ x: w / 2, y: h * 0.47, rx: Math.min(w * 0.44, 640), ry: Math.min(h * 0.36, 300) }) });
   flow($('#xflow'), { density: 1 / 1500, clear: (w, h) => ({ x: w / 2, y: h * 0.5, rx: Math.min(w * 0.36, 520), ry: h * 0.32 }) });
   flow($('#vflow'), { bg: [11, 11, 13], ink: [255, 255, 255], inkA: 0.13, fade: 0.07, density: 1 / 700, accent: 0.08 });
 }
@@ -123,9 +125,10 @@ function appCard(a) {
       <div><h3>${esc(a.title || a.host)}</h3>${a.description ? `<p class="desc">${esc(a.description)}</p>` : ''}</div>
       <div class="chips"><span class="chip live"><i></i>read live</span>${tagChip(a)}<span class="chip"><i></i>${n} coin${n === 1 ? '' : 's'} listed</span></div>
       <div class="kit">${kitRows(a.host)}</div>
-      <div class="acts"><a class="btn" href="https://pump.fun/create" target="_blank" rel="noopener">Launch on pump.fun ↗</a><button class="btn ghost" type="button" data-go="launch" data-host="${esc(a.host)}">Then list it</button></div>
+      <div class="acts"><a class="btn" href="https://pump.fun/create" target="_blank" rel="noopener">Launch on pump.fun ↗</a><button class="btn ghost" type="button" data-go="launch" data-host="${esc(a.host)}">Then list it</button><a class="btn ghost" href="${shareUrl(a.host)}" target="_blank" rel="noopener">Share ↗</a></div>
     </div></div>`;
 }
+const shareUrl = h => 'https://x.com/intent/post?text=' + encodeURIComponent(`Launch a coin on ${h}. Fees go to whoever vibed it.`) + '&url=' + encodeURIComponent(location.origin + '/?app=' + h);
 const PH = '<div class="ph"><svg viewBox="-9 -9 132 200" aria-hidden="true"><use href="#mk"/></svg></div>';
 function wireImgs(root) { $$('img.og', root).forEach(i => i.addEventListener('error', () => { i.insertAdjacentHTML('afterend', PH); i.remove(); }, { once: true })); }
 async function hero(e) {
@@ -192,9 +195,19 @@ async function listCoin() {
 }
 
 /* ---------- 04: claim ---------- */
+let fw = 'html';
+const metaHl = w => `<span class="t">&lt;meta</span> <span class="a">name</span>=<span class="s">"vibed"</span> <span class="a">content</span>=<span class="s">"${esc(w)}"</span><span class="t">&gt;</span>`;
+const FW = {
+  html: { code: w => `<span class="c">&lt;!-- index.html · inside &lt;head&gt; of your homepage --&gt;</span>\n<span class="hl">${metaHl(w)}</span>`, text: w => `<meta name="vibed" content="${w}">` },
+  vite: { code: w => `<span class="c">&lt;!-- Lovable, Vite, Bolt: index.html at the project root --&gt;</span>\n<span class="t">&lt;head&gt;</span>\n  <span class="hl">${metaHl(w)}</span>\n  <span class="c">...</span>\n<span class="t">&lt;/head&gt;</span>`, text: w => `<meta name="vibed" content="${w}">` },
+  next: { code: w => `<span class="c">// Next.js App Router · app/layout.tsx</span>\n<span class="t">export const</span> metadata = {\n  <span class="c">// ...your title and description</span>\n  <span class="hl">other: { <span class="s">'vibed'</span>: <span class="s">'${esc(w)}'</span> },</span>\n};`, text: w => `other: { 'vibed': '${w}' },` },
+  astro: { code: w => `<span class="c">&lt;!-- Astro · src/layouts/Layout.astro, inside &lt;head&gt; --&gt;</span>\n<span class="hl">${metaHl(w)}</span>`, text: w => `<meta name="vibed" content="${w}">` },
+};
 function tagCode() {
-  const wv = me ? me.address : 'YOUR_SOLANA_WALLET';
-  $('#tagPre').innerHTML = `<span class="c">&lt;!-- inside &lt;head&gt; of your homepage --&gt;</span>\n<span class="hl"><span class="t">&lt;meta</span> <span class="a">name</span>=<span class="s">"vibed"</span> <span class="a">content</span>=<span class="s">"${esc(wv)}"</span><span class="t">&gt;</span></span>`;
+  const wv = me ? me.address : 'YOUR_SOLANA_WALLET', pre = $('#tagPre');
+  pre.style.opacity = 0;
+  setTimeout(() => { pre.innerHTML = FW[fw].code(wv); pre.style.opacity = 1; }, reduce ? 0 : 140);
+  $$('#tagTabs button').forEach(b => b.classList.toggle('on', b.dataset.fw === fw));
 }
 async function checkSite() {
   const v = $('#cUrl').value, out = $('#cVerdict'), err = $('#cErr'), btn = $('#cCheck'); err.textContent = ''; out.innerHTML = '';
@@ -216,7 +229,8 @@ async function checkSite() {
   }
   const n = coinsFor(host).length;
   rows.push(row(n > 0, n ? `${n} coin${n === 1 ? '' : 's'} on the board name this app.` : 'No coin on the board names this app yet.'));
-  out.innerHTML = rows.join('') + (a.tagValid && me && me.address === a.vibed ? `<div class="acts" style="margin-top:6px"><button class="btn sm sun" type="button" id="cRecord">Record my claim</button></div>` : '');
+  out.innerHTML = rows.join('') + `<div class="acts" style="margin-top:6px">${a.tagValid && me && me.address === a.vibed ? '<button class="btn sm sun" type="button" id="cRecord">Record my claim</button>' : ''}${a.tagValid ? '<button class="btn sm ghost" type="button" id="cCard">Make my claim card</button>' : ''}</div>`;
+  const cc = $('#cCard'); if (cc) cc.onclick = () => claimCard(host, a.vibed, out);
   const rec = $('#cRecord');
   if (rec) rec.onclick = async () => {
     rec.disabled = true;
@@ -226,6 +240,82 @@ async function checkSite() {
       rec.remove(); setTimeout(loadBoard, 4000);
     } catch (e) { err.textContent = human(e); rec.disabled = false; rec.textContent = 'Record my claim'; }
   };
+}
+
+/* ---------- the claim card: a PNG builders can post ---------- */
+async function claimCard(host, wallet, out) {
+  const old = $('.sharebox', out); if (old) old.remove();
+  const W = 1200, H = 630, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  try { await Promise.all(['700 64px Brico', '500 20px GM', '400 30px Inter'].map(f => document.fonts.load(f))); } catch (e) { }
+  g.fillStyle = '#FAF9F6'; g.fillRect(0, 0, W, H);
+  const ang = (x, y) => (Math.sin(x * .0042 + 1.3) * 1.6 + Math.cos(y * .0055 - .4) * 1.4 + Math.sin((x + y) * .003 + 1.7) * 1.1) * 1.25;
+  const clear = (x, y) => ((x - W / 2) / 470) ** 2 + ((y - H / 2) / 225) ** 2 < 1;
+  const SUN = ['#FF3D8B', '#FF7A45', '#FFB547'];
+  for (let i = 0; i < 520; i++) {
+    let x = Math.random() * W, y = Math.random() * H; if (clear(x, y)) continue;
+    const acc = i % 70 === 0; g.strokeStyle = acc ? SUN[i % 3] : 'rgba(10,10,10,.12)'; g.lineWidth = acc ? 1.8 : 1;
+    g.beginPath(); g.moveTo(x, y);
+    for (let k = 0; k < 70; k++) { const a = ang(x, y); x += Math.cos(a) * 3; y += Math.sin(a) * 3; if (clear(x, y) || x < 0 || y < 0 || x > W || y > H) break; g.lineTo(x, y); }
+    g.stroke();
+  }
+  // the mark, drawn from the page's own SVG
+  const defs = document.querySelector('svg defs');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 -9 132 200" width="132" height="200"><defs>${defs.querySelector('#hz').outerHTML}</defs>${defs.querySelector('#mk').innerHTML}</svg>`;
+  const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  await new Promise(r => { img.onload = r; img.onerror = r; });
+  g.textAlign = 'center';
+  g.font = '700 46px Brico'; const vw = g.measureText('Vibed').width;
+  const mx = W / 2 - (vw + 52) / 2; try { g.drawImage(img, mx, 128, 40, 61); } catch (e) { }
+  g.fillStyle = '#0A0A0A'; g.textAlign = 'left'; g.fillText('Vibed', mx + 52, 178); g.textAlign = 'center';
+  g.font = '700 ' + (host.length > 22 ? 54 : 70) + 'px Brico'; g.fillText(host, W / 2, 300);
+  g.font = '500 22px GM'; g.fillStyle = '#148A4E'; g.fillText('✓ claimed by ' + short(wallet), W / 2, 360);
+  g.font = '400 30px Inter'; g.fillStyle = '#3F3F46'; g.fillText('Fees go to', W / 2 - 128, 440);
+  g.fillStyle = '#E5407A'; g.font = '500 30px Inter'; g.fillText('whoever vibed it.', W / 2 + 92, 440);
+  g.font = '500 16px GM'; g.fillStyle = '#71717A'; g.fillText(location.host + '/?app=' + host, W / 2, 500);
+  const box = document.createElement('div'); box.className = 'sharebox';
+  box.innerHTML = `<div class="acts"><button class="btn sm" type="button" data-dl>Download PNG</button><a class="btn sm ghost" target="_blank" rel="noopener" href="https://x.com/intent/post?text=${encodeURIComponent(`I built ${host}. Coins launched on it through Vibed send their fees to me.`)}&url=${encodeURIComponent(location.origin + '/?app=' + host)}">Post on X ↗</a></div>`;
+  box.prepend(cv); out.append(box);
+  $('[data-dl]', box).onclick = () => cv.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'vibed-' + host + '.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); });
+}
+
+/* ---------- the command menu (⌘K) ---------- */
+function palette() {
+  if ($('.pal')) return;
+  const go = (id, focus) => () => { document.getElementById(id).scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); if (focus) setTimeout(() => $(focus).focus({ preventScroll: true }), 650); };
+  const base = [
+    ['Read an app', 'paste a link', go('top', '#pasteUrl')],
+    ['Check my site', 'claim', go('claim', '#cUrl')],
+    ['Copy the claim tag', FW[fw].text('…').slice(0, 26), () => copy(FW[fw].text(me ? me.address : 'YOUR_SOLANA_WALLET'), 'Tag copied')],
+    ['List a coin', 'launch', go('launch', '#mMint')],
+    ['Connect wallet', me ? short(me.address) : 'Phantom, Solflare, Backpack', () => picker('Connect your wallet', 'Connecting signs nothing.')],
+    ['How it works', 'section 01', go('how')], ['The board', 'section 05', go('board')], ['The vault', 'section 06', go('vault')], ['Questions', 'section 07', go('faq')],
+  ];
+  if (board && board.vault && board.vault.address) base.push(['Copy vault address', short(board.vault.address), () => copy(board.vault.address, 'Vault address copied')]);
+  if (CONFIG.ca) base.push(['Copy contract address', short(CONFIG.ca), () => copy(CONFIG.ca, 'Contract address copied')]);
+  const v = document.createElement('div'); v.className = 'pal';
+  v.innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-label="Command menu"><input placeholder="Type a command, or paste an app link…" spellcheck="false"><ul></ul><div class="ft"><span>↑↓ move</span><span>↵ run</span><span>esc close</span></div></div>`;
+  document.body.append(v);
+  const inp = $('input', v), ul = $('ul', v); let items = [], sel = 0;
+  const close = () => v.remove();
+  const draw = () => {
+    const q = inp.value.trim().toLowerCase(), h = hostOf(inp.value);
+    items = base.filter(x => !q || x[0].toLowerCase().includes(q) || x[1].toLowerCase().includes(q));
+    if (h && h.includes('.')) items.unshift(['Read ' + h, 'app reader', () => { $('#pasteUrl').value = h; go('top')(); hero(); }]);
+    sel = Math.min(sel, Math.max(0, items.length - 1));
+    ul.innerHTML = items.map((x, i) => `<li class="${i === sel ? 'on' : ''}" data-i="${i}"><span>${esc(x[0])}</span><small>${esc(x[1])}</small></li>`).join('') || '<li><span>No matches</span></li>';
+  };
+  const run = i => { const x = items[i]; if (!x) return; close(); x[2](); };
+  inp.addEventListener('input', () => { sel = 0; draw(); });
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = (sel + 1) % Math.max(1, items.length); draw(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = (sel - 1 + items.length) % Math.max(1, items.length); draw(); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(sel); }
+    else if (e.key === 'Escape') close();
+  });
+  ul.addEventListener('click', e => { const li = e.target.closest('[data-i]'); if (li) run(+li.dataset.i); });
+  v.addEventListener('click', e => { if (e.target === v) close(); });
+  draw(); inp.focus();
 }
 
 /* ---------- 05 + 06: board and vault ---------- */
@@ -263,6 +353,7 @@ function renderBoard() {
   const v = board.vault;
   if (v && v.address) {
     countTo($('#vNum'), v.sol, 4);
+    $('#vUsd').textContent = v.usd != null && v.solUsd ? `≈ $${v.usd.toLocaleString('en-US', { maximumFractionDigits: 2 })} · SOL at $${v.solUsd.toFixed(2)}` : '';
     $('#vAddr').innerHTML = `<span>${esc(v.address)}</span><button type="button" data-copy="${esc(v.address)}" data-label="Vault address copied">Copy</button><a href="${ACCT(v.address)}" target="_blank" rel="noopener">Solscan ↗</a>`;
   }
   const pays = board.feed.filter(f => f.kind === 'paid');
@@ -325,10 +416,26 @@ $('#mList').addEventListener('click', listCoin);
 $('#cCheck').addEventListener('click', checkSite);
 $('#cUrl').addEventListener('keydown', e => { if (e.key === 'Enter') checkSite(); });
 $('#cWallet').addEventListener('click', async () => { if (!me) await picker('Connect your wallet', 'Use the wallet you put in your tag. Connecting signs nothing.'); });
-$('#copyTag').addEventListener('click', () => copy(`<meta name="vibed" content="${me ? me.address : 'YOUR_SOLANA_WALLET'}">`, 'Tag copied'));
+$('#copyTag').addEventListener('click', () => copy(FW[fw].text(me ? me.address : 'YOUR_SOLANA_WALLET'), 'Tag copied'));
+$('#tagTabs').addEventListener('click', e => { const b = e.target.closest('[data-fw]'); if (!b) return; fw = b.dataset.fw; tagCode(); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden && board) loadBoard(); });
 
+function typePlaceholder() {
+  const inp = $('#pasteUrl'); if (reduce) return;
+  const ex = ['your-app.lovable.app', 'weekend-project.vercel.app', 'tiny-tool.netlify.app', 'side-quest.com', 'my-game.replit.app'];
+  let i = 0, j = 0, del = false;
+  setInterval(() => {
+    if (document.activeElement === inp || inp.value) return;
+    const w = ex[i];
+    if (!del) { j++; if (j > w.length + 14) del = true; } else { j -= 2; if (j <= 0) { del = false; j = 0; i = (i + 1) % ex.length; } }
+    inp.placeholder = w.slice(0, Math.max(0, Math.min(j, w.length)));
+  }, 75);
+}
+$('#pasteUrl').addEventListener('input', () => { const h = hostOf($('#pasteUrl').value), el = $('#liveLine'); if (h && h.includes('.')) { el.innerHTML = `vibes <b>${esc(h)}</b> via VIBED`; el.classList.add('on'); } else el.classList.remove('on'); });
+document.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); palette(); } });
+$('#cmdk').addEventListener('click', palette);
 document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && !t.classList.contains('og')) t.classList.add('gone'); }, true);
-words(); marquee(); chrome(); wire(); reveal(); faq(); tagCode(); loadBoard();
+words(); marquee(); chrome(); wire(); reveal(); faq(); tagCode(); loadBoard(); typePlaceholder();
+magnetic(); tilt('.appcard, .panel, .app, .vcard, .cannot, .step .dot, .receipt, .f-coin'); kickers();
 const qp = new URLSearchParams(location.search).get('app');
 if (qp) { $('#pasteUrl').value = qp; hero(); }
